@@ -242,7 +242,7 @@ return [
         |
         */
 
-        'increase' => env('LIMITS_INCREASE', 0)
+        'increase' => env('LIMITS_INCREASE', 0),
 
     ],
 
@@ -378,7 +378,7 @@ return [
         | SMS Connectors / Gateways
         |--------------------------------------------------------------------------
         |
-        | null, log, euroSms
+        | null, log, eurosms
         |
         */
         'connector' => env('SMS_CONNECTOR', 'log'),
@@ -392,7 +392,7 @@ return [
                 'driver' => 'log',
             ],
 
-            'euroSms' => [
+            'eurosms' => [
                 'id' => env('EUROSMS_ID'),
                 'key' => env('EUROSMS_KEY'),
                 'senderNumber' => env('EUROSMS_NUMBER'),
@@ -403,6 +403,6 @@ return [
                 'secret' => env('NEXMO_SECRET'),
                 'sms_from' => '15556666666',
             ],
-        ]
+        ],
     ],
 ];
