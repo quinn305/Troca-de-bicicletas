@@ -13,196 +13,194 @@ use Illuminate\Http\Request;
 |
 */
 
-$api = app('Dingo\Api\Routing\Router');
+Api::version('v1', ['namespace' => 'BikeShare\Http\Controllers\Api\v1'], function () {
 
-$api->version('v1', ['namespace' => 'BikeShare\Http\Controllers\Api\v1'], function ($api) {
-
-    $api->group(['prefix' => 'auth', 'namespace' => 'Auth'], function ($api) {
-        $api->post('verify-phone-number', [
+    Api::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
+        Api::post('verify-phone-number', [
             'as' => 'api.auth.verify-phone-number',
             'uses' => 'RegisterController@verifyPhoneNumber',
         ]);
 
-        $api->post('register', [
+        Api::post('register', [
             'as' => 'api.auth.register',
             'uses' => 'RegisterController@register',
         ]);
 
-        $api->get('agree/{token}', [
+        Api::get('agree/{token}', [
             'as' => 'api.auth.agree',
             'uses' => 'RegisterController@agree',
         ]);
 
-        $api->post('authenticate', [
+        Api::post('authenticate', [
             'as' => 'api.auth.login',
             'uses' => 'LoginController@authenticate',
         ]);
 
         // Password Reset Routes...
-        $api->post('password/email', [
+        Api::post('password/email', [
             'as' => 'api.auth.password.email',
-            'uses' => 'ForgotPasswordController@sendResetLinkEmail'
+            'uses' => 'ForgotPasswordController@sendResetLinkEmail',
         ]);
 
-        $api->post('password/reset', [
+        Api::post('password/reset', [
             'as' => 'api.auth.password.post.reset',
-            'uses' => 'ResetPasswordController@reset'
+            'uses' => 'ResetPasswordController@reset',
         ]);
 
 
     });
 
-    $api->group(['middleware' => 'jwt.auth'], function ($api) {
+    Api::group(['middleware' => 'jwt.auth'], function () {
 
-        $api->group(['prefix' => 'me', 'namespace' => 'Me'], function ($api) {
-            $api->get('', [
+        Api::group(['prefix' => 'me', 'namespace' => 'Me'], function () {
+            Api::get('', [
                 'as' => 'api.me',
                 'uses' => 'MeController@getInfo',
             ]);
 
-            $api->get('rents', [
+            Api::get('rents', [
                 'as' => 'api.me.rents',
                 'uses' => 'MeController@getAllRents',
             ]);
 
-            $api->get('rents/active', [
+            Api::get('rents/active', [
                 'as' => 'api.me.rents.active',
                 'uses' => 'MeController@getActiveRents',
             ]);
 
         });
 
-        $api->group(['prefix' => 'stands', 'namespace' => 'Stands'], function ($api) {
-            $api->get('', [
+        Api::group(['prefix' => 'stands', 'namespace' => 'Stands'], function () {
+            Api::get('', [
                 'as' => 'api.stands',
                 'uses' => 'StandsController@index',
             ]);
         });
 
-        $api->group(['prefix' => 'rents', 'namespace' => 'Rents'], function ($api) {
-            $api->post('{uuid}/close', [
+        Api::group(['prefix' => 'rents', 'namespace' => 'Rents'], function () {
+            Api::post('{uuid}/close', [
                 'as' => 'api.rents.close',
                 'uses' => 'RentsController@close',
             ]);
 
-            $api->post('', [
+            Api::post('', [
                 'as' => 'api.rents.store',
                 'uses' => 'RentsController@store',
             ]);
         });
 
-        $api->group(['middleware' => 'role:admin'], function ($api) {
-            $api->group(['prefix' => 'rents', 'namespace' => 'Rents'], function ($api) {
-                $api->get('', [
+        Api::group(['middleware' => 'role:admin'], function () {
+            Api::group(['prefix' => 'rents', 'namespace' => 'Rents'], function () {
+                Api::get('', [
                     'as' => 'api.rents.index',
                     'uses' => 'RentsController@index',
                 ]);
 
-                $api->get('/active', [
+                Api::get('/active', [
                     'as' => 'api.rents.active',
                     'uses' => 'RentsController@active',
                 ]);
 
-                $api->get('/history', [
+                Api::get('/history', [
                     'as' => 'api.rents.history',
                     'uses' => 'RentsController@history',
                 ]);
             });
 
-            $api->group(['prefix' => 'users', 'namespace' => 'Users'], function ($api) {
+            Api::group(['prefix' => 'users', 'namespace' => 'Users'], function () {
 
-                $api->group(['prefix' => '{uuid}'], function ($api) {
-                    $api->get('/restore', [
+                Api::group(['prefix' => '{uuid}'], function () {
+                    Api::get('/restore', [
                         'as' => 'api.users.restore',
                         'uses' => 'UsersController@restore',
                     ]);
                 });
 
-                $api->get('', [
+                Api::get('', [
                     'as' => 'api.users.index',
                     'uses' => 'UsersController@index',
                 ]);
 
-                $api->post('', [
+                Api::post('', [
                     'as' => 'api.users.store',
                     'uses' => 'UsersController@store',
                 ]);
 
-                $api->get('{uuid}', [
+                Api::get('{uuid}', [
                     'as' => 'api.users.show',
                     'uses' => 'UsersController@show',
                 ]);
 
-                $api->put('{uuid}', [
+                Api::put('{uuid}', [
                     'as' => 'api.users.update',
                     'uses' => 'UsersController@update',
                 ]);
 
-                $api->delete('{uuid}', [
+                Api::delete('{uuid}', [
                     'as' => 'api.users.destroy',
                     'uses' => 'UsersController@destroy',
                 ]);
             });
 
-            $api->group(['prefix' => 'bikes', 'namespace' => 'Bikes'], function ($api) {
+            Api::group(['prefix' => 'bikes', 'namespace' => 'Bikes'], function () {
 
-                $api->group(['prefix' => '{uuid}'], function ($api) {
-                    $api->post('/rent', [
+                Api::group(['prefix' => '{uuid}'], function () {
+                    Api::post('/rent', [
                         'as' => 'api.bikes.rent',
                         'uses' => 'BikesController@rentBike',
                     ]);
                 });
 
-                $api->get('', [
+                Api::get('', [
                     'as' => 'api.bikes.index',
                     'uses' => 'BikesController@index',
                 ]);
 
-                $api->post('', [
+                Api::post('', [
                     'as' => 'api.bikes.store',
                     'uses' => 'BikesController@store',
                 ]);
 
-                $api->get('{uuid}', [
+                Api::get('{uuid}', [
                     'as' => 'api.bikes.show',
                     'uses' => 'BikesController@show',
                 ]);
 
-                $api->delete('{uuid}', [
+                Api::delete('{uuid}', [
                     'as' => 'api.bikes.destroy',
                     'uses' => 'BikesController@destroy',
                 ]);
             });
 
-            $api->group(['prefix' => 'notes', 'namespace' => 'Notes'], function ($api) {
-                $api->delete('{uuid}', [
+            Api::group(['prefix' => 'notes', 'namespace' => 'Notes'], function () {
+                Api::delete('{uuid}', [
                     'as' => 'api.notes.destroy',
                     'uses' => 'NotesController@destroy',
                 ]);
             });
 
-            $api->group(['prefix' => 'coupons', 'namespace' => 'Coupons'], function ($api) {
-                $api->get('', [
+            Api::group(['prefix' => 'coupons', 'namespace' => 'Coupons'], function () {
+                Api::get('', [
                     'as' => 'api.coupons.index',
                     'uses' => 'CouponsController@index',
                 ]);
 
-                $api->post('', [
+                Api::post('', [
                     'as' => 'api.coupons.store',
                     'uses' => 'CouponsController@store',
                 ]);
 
-                $api->get('{uuid}/sell', [
+                Api::get('{uuid}/sell', [
                     'as' => 'api.coupons.sell',
                     'uses' => 'CouponsController@sell',
                 ]);
 
-                $api->get('{uuid}/validate', [
+                Api::get('{uuid}/validate', [
                     'as' => 'api.coupons.validate',
                     'uses' => 'CouponsController@validateCoupon',
                 ]);
 
-                $api->get('{uuid}', [
+                Api::get('{uuid}', [
                     'as' => 'api.coupons.show',
                     'uses' => 'CouponsController@show',
                 ]);
@@ -211,11 +209,6 @@ $api->version('v1', ['namespace' => 'BikeShare\Http\Controllers\Api\v1'], functi
         });
     });
 });
-
-
-
-
-
 
 Route::group(['middleware' => 'auth:api'], function () {
 

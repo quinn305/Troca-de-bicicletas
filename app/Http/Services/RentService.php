@@ -152,7 +152,7 @@ class RentService
     {
         $this->note = $bike->notes()->create([
             'note' => $note,
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         // TODO notify Admins (email and sms if enabled)
@@ -165,6 +165,7 @@ class RentService
     {
         return $bike->stand->getTopPosition() == $bike->stack_position;
     }
+
 
     public function checkLongRent()
     {
@@ -190,7 +191,7 @@ class RentService
             $users = collect($user);
         } else {
             $users = app(UsersRepository::class)->findWhere([
-                ['limit', '!=', 0]
+                ['limit', '!=', 0],
             ]);
         }
 
