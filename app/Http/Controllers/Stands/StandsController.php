@@ -7,8 +7,10 @@ use BikeShare\Domain\Stand\Requests\CreateStandRequest;
 use BikeShare\Domain\Stand\Requests\UpdateStandRequest;
 use BikeShare\Domain\Stand\StandsRepository;
 use BikeShare\Http\Controllers\Controller;
+use File;
 use Illuminate\Http\Request;
 use BikeShare\Http\Requests;
+use QrCode;
 
 class StandsController extends Controller
 {
@@ -60,7 +62,13 @@ class StandsController extends Controller
      */
     public function store(CreateStandRequest $request)
     {
-        $this->standRepo->create($request->all());
+        $model = $this->standRepo->create($request->all());
+
+        $file = storage_path('app/qr/stands/' . $model->id);
+        if (! File::exists($file)) {
+            File::makeDirectory($file, $mode = 0777, true, true);
+        }
+        QrCode::format('svg')->generate($model->id, $file . '/qr-stand-' . $model->id . '.svg');
 
         toastr()->success('Stand successfully created');
 
@@ -78,9 +86,11 @@ class StandsController extends Controller
     public function show($uuid)
     {
         $stand = $this->standRepo->findByUuid($uuid);
-        $bikes = $stand->bikes()->with(['rents' => function ($query) {
-            $query->latest()->with('user')->first();
-        }])->where('status', BikeStatus::FREE)->get();
+        $bikes = $stand->bikes()->with([
+            'rents' => function ($query) {
+                $query->latest()->with('user')->first();
+            },
+        ])->where('status', BikeStatus::FREE)->get();
 
         return view('stands.show', [
             'stand' => $stand,
@@ -110,7 +120,7 @@ class StandsController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateStandRequest|Request $request
-     * @param  int $uuid
+     * @param  int                       $uuid
      *
      * @return \Illuminate\Http\Response
      */

@@ -43,6 +43,10 @@
                                     <a href="{{ route('app.bikes.edit', $bike->uuid) }}" class="edit-modal" data-toggle="tooltip" title="Edit">
                                         <i class="fa fa-edit fa-fw"></i>
                                     </a>
+
+                                    <a href="{{ route('app.download', ['type' => 'bike-qr', 'file' => $bike->id]) }}" class="">
+                                        <i class="fa fa-download fa-fw"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

@@ -15,8 +15,10 @@ use BikeShare\Domain\Stand\StandsRepository;
 use BikeShare\Domain\User\User;
 use BikeShare\Http\Controllers\Controller;
 use Carbon\Carbon;
+use File;
 use Illuminate\Http\Request;
 use BikeShare\Http\Requests;
+use QrCode;
 use ReflectionClass;
 
 class BikesController extends Controller
@@ -75,7 +77,12 @@ class BikesController extends Controller
      */
     public function store(CreateBikeRequest $request)
     {
-        $this->bikeRepo->create($request->all());
+        $model = $this->bikeRepo->create($request->all());
+        $file = storage_path('app/qr/bikes/' . $model->id);
+        if (! File::exists($file)) {
+            File::makeDirectory($file, $mode = 0777, true, true);
+        }
+        QrCode::format('svg')->generate($model->id, $file . '/qr-bike-' . $model->id . '.svg');
 
         toastr()->success('Bike successfully created');
 

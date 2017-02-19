@@ -179,6 +179,7 @@ return [
         Kamaln7\Toastr\ToastrServiceProvider::Class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Brotzka\DotenvEditor\DotenvEditorServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         //
 
         /*
@@ -243,7 +244,7 @@ return [
         'Geotools' => Toin0u\Geotools\Facade\Geotools::class,
         'Toastr' => Kamaln7\Toastr\Facades\Toastr::class,
         'DotenvEditor' => Brotzka\DotenvEditor\DotenvEditorFacade::class,
-
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 
     'version' => '0.0.1',

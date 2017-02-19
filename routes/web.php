@@ -72,6 +72,7 @@ Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
 Route::group(['prefix' => 'app', 'middleware' => 'auth'], function () {
 
     Route::get('logs', 'ActivitylogController@index')->name('app.logs.index');
+    Route::get('download', 'Controller@download')->name('app.download');
 
     Route::get('/home', [
         'as' => 'app.home',

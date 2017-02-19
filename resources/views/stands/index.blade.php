@@ -48,6 +48,11 @@
                                     <a href="{{ route('app.stands.edit', $stand->uuid) }}" class="">
                                         <i class="fa fa-edit fa-fw"></i>
                                     </a>
+
+                                    <a href="{{ route('app.download', ['type' => 'stand-qr', 'file' => $stand->id]) }}" class="">
+                                        <i class="fa fa-download fa-fw"></i>
+                                    </a>
+
                                 </td>
                             </tr>
                         @endforeach
