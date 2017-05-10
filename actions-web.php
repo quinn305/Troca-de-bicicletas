@@ -75,6 +75,18 @@ function rent($userId,$bike,$force=FALSE)
          $row=$result->fetch_assoc();
          $standid=$row["currentStand"];
          $stacktopbike=checktopofstack($standid);
+
+
+         $result=$db->query("SELECT serviceTag FROM stands WHERE standId='$standid'");
+         $row=$result->fetch_assoc();
+         $serviceTag=$row["serviceTag"];
+
+        if ( $serviceTag <> 0 )
+        {
+                response(_('Renting from service stands is not allowed: The bike probably waits for a repair.'),ERROR);
+        }
+
+
          if ($watches["stack"] AND $stacktopbike<>$bike)
             {
             $result=$db->query("SELECT standName FROM stands WHERE standId='$standid'");
@@ -152,7 +164,7 @@ function returnBike($userId,$bike,$stand,$note="",$force=FALSE)
 
       if ($bikenumber==0)
          {
-         response(_('Youh currently have no rented bikes.'),ERROR);
+         response(_('You currently have no rented bikes.'),ERROR);
          }
       }
 
@@ -175,7 +187,7 @@ function returnBike($userId,$bike,$stand,$note="",$force=FALSE)
    if ($note) addNote($userId,$bikeNum,$note);
 
    $message = '<h3>'._('Bike').' '.$bikeNum.': <span class="label label-primary">'._('Lock with code').' '.$currentCode.'.</span></h3>';
-   $message.= '<br />'._('Please').', <strong>'._('rotate the lockpad to').' <span class="label label-default">0000</span></strong> '._('when leaving').'.';
+   $message.= '<br />'._('Please').', <strong>'._('rotate the lockpad to').' <span class="label label-default">0000</span></strong> '._('when leaving').'.'._('Wipe the bike clean if it is dirty, please').'.';
    if ($note) $message.='<br />'._('You have also reported this problem:').' '.$note.'.';
 
    if ($force==FALSE)
@@ -352,8 +364,11 @@ function last($userId,$bike=0)
          if($row["standName"]!=NULL)
             {
             $historyInfo.=$row["standName"];
-            $revertcode=explode("|",$row["parameter"]);
-            $revertcode=$revertcode[1];
+            if (strpos($row["parameter"],"|"))
+               {
+               $revertcode=explode("|",$row["parameter"]);
+               $revertcode=$revertcode[1];
+               }
             if ($row["action"]=="REVERT") $historyInfo.=' <span class="label label-warning">'._('Revert').' ('.str_pad($revertcode,4,"0",STR_PAD_LEFT).')</span>';
             }
          else
