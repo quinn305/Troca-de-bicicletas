@@ -16,7 +16,7 @@ class BuildApiDocs extends Command
     protected $signature = 'bike-share:docs';
 
     /**
-     * The console command description.
+     * The console command description
      *
      * @var string
      */
@@ -24,7 +24,7 @@ class BuildApiDocs extends Command
 
 
     /**
-     * Create a new command instance.
+     * Create new command instance.
      *
      */
     public function __construct()
