@@ -18,7 +18,7 @@ html, body {
    background-image: url(../img/loading.svg);
    background-repeat: no-repeat;
    z-index: 1000;
-   color: white;
+   color: red;
 }
 
 @media screen {
